@@ -1,0 +1,6 @@
+# Le chiavi segrete non vanno MAI nella repo
+.streamlit/secrets.toml
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/

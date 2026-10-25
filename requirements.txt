@@ -1,0 +1,5 @@
+streamlit>=1.50
+anthropic>=2.3.0
+requests>=2.32
+pandas>=2.2
+youtube-transcript-api>=1.2
