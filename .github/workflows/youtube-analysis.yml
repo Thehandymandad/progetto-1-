@@ -1,0 +1,50 @@
+name: YouTube analysis
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "URL o ID del video YouTube"
+        required: true
+        default: "RXN9ci0SvIo"
+  push:
+    branches: [claude/youtube-analysis]
+    paths:
+      - "tools/yt_analyze.py"
+      - ".github/workflows/youtube-analysis.yml"
+      - "tools/video.txt"
+
+permissions:
+  contents: write
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installa dipendenze
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          pip install -q -U yt-dlp youtube-transcript-api faster-whisper pillow
+
+      - name: Analizza video
+        run: |
+          URL="${{ github.event.inputs.url }}"
+          if [ -z "$URL" ]; then URL="$(cat tools/video.txt)"; fi
+          ID=$(echo "$URL" | grep -oE '(v=|youtu\.be/|^)[A-Za-z0-9_-]{11}' | tail -c 12)
+          rm -rf "analysis/$ID"
+          python tools/yt_analyze.py "$URL" "analysis/$ID"
+
+      - name: Salva risultati nel repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898314+github-actions[bot]@users.noreply.github.com"
+          git add analysis
+          git commit -m "Analisi video YouTube [skip ci]" || echo "niente da salvare"
+          git push
