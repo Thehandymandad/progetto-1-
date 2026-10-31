@@ -1,0 +1,182 @@
+
+===== metadati =====
+$ yt-dlp --no-warnings --retries 3 --skip-download --write-info-json -o analysis/RXN9ci0SvIo/video https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading visionos player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+$ yt-dlp --no-warnings --retries 3 --extractor-args youtube:player_client=tv,web_safari --skip-download --write-info-json -o analysis/RXN9ci0SvIo/video https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading tv client config
+[youtube] RXN9ci0SvIo: Downloading player 11a45ffb-main
+[youtube] RXN9ci0SvIo: Downloading tv player API JSON
+[youtube] RXN9ci0SvIo: Downloading web safari client config
+[youtube] RXN9ci0SvIo: Downloading web safari player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+$ yt-dlp --no-warnings --retries 3 --extractor-args youtube:player_client=mweb --skip-download --write-info-json -o analysis/RXN9ci0SvIo/video https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading mweb client config
+[youtube] RXN9ci0SvIo: Downloading mweb player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+$ yt-dlp --no-warnings --retries 3 --extractor-args youtube:player_client=android --skip-download --write-info-json -o analysis/RXN9ci0SvIo/video https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading android player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+$ yt-dlp --no-warnings --retries 3 --extractor-args youtube:player_client=ios --skip-download --write-info-json -o analysis/RXN9ci0SvIo/video https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading ios player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+$ yt-dlp --no-warnings --retries 3 --extractor-args youtube:player_client=web_embedded --skip-download --write-info-json -o analysis/RXN9ci0SvIo/video https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading web embedded client config
+[youtube] RXN9ci0SvIo: Downloading player 11a45ffb-main
+[youtube] RXN9ci0SvIo: Downloading web embedded player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+
+===== sottotitoli yt-dlp =====
+$ yt-dlp --no-warnings --retries 3 --skip-download --write-subs --write-auto-subs --sub-langs en.*,it.*,en,it --sub-format vtt -o analysis/RXN9ci0SvIo/subs https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading visionos player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+$ yt-dlp --no-warnings --retries 3 --extractor-args youtube:player_client=tv,web_safari --skip-download --write-subs --write-auto-subs --sub-langs en.*,it.*,en,it --sub-format vtt -o analysis/RXN9ci0SvIo/subs https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading tv client config
+[youtube] RXN9ci0SvIo: Downloading player 11a45ffb-main
+[youtube] RXN9ci0SvIo: Downloading tv player API JSON
+[youtube] RXN9ci0SvIo: Downloading web safari client config
+[youtube] RXN9ci0SvIo: Downloading web safari player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+$ yt-dlp --no-warnings --retries 3 --extractor-args youtube:player_client=mweb --skip-download --write-subs --write-auto-subs --sub-langs en.*,it.*,en,it --sub-format vtt -o analysis/RXN9ci0SvIo/subs https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading mweb client config
+[youtube] RXN9ci0SvIo: Downloading mweb player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+$ yt-dlp --no-warnings --retries 3 --extractor-args youtube:player_client=android --skip-download --write-subs --write-auto-subs --sub-langs en.*,it.*,en,it --sub-format vtt -o analysis/RXN9ci0SvIo/subs https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading android player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+$ yt-dlp --no-warnings --retries 3 --extractor-args youtube:player_client=ios --skip-download --write-subs --write-auto-subs --sub-langs en.*,it.*,en,it --sub-format vtt -o analysis/RXN9ci0SvIo/subs https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading ios player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+$ yt-dlp --no-warnings --retries 3 --extractor-args youtube:player_client=web_embedded --skip-download --write-subs --write-auto-subs --sub-langs en.*,it.*,en,it --sub-format vtt -o analysis/RXN9ci0SvIo/subs https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading web embedded client config
+[youtube] RXN9ci0SvIo: Downloading player 11a45ffb-main
+[youtube] RXN9ci0SvIo: Downloading web embedded player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+
+===== trascrizione youtube-transcript-api =====
+Traceback (most recent call last):
+  File "/home/runner/work/progetto-1-/progetto-1-/tools/yt_analyze.py", line 49, in wrapper
+    return fn()
+           ^^^^
+  File "/home/runner/work/progetto-1-/progetto-1-/tools/yt_analyze.py", line 117, in transcript_api
+    t = api.fetch(VID, languages=["en", "it"])
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/youtube_transcript_api/_api.py", line 71, in fetch
+    self.list(video_id)
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/youtube_transcript_api/_api.py", line 127, in list
+    return self._fetcher.fetch(video_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/youtube_transcript_api/_transcripts.py", line 356, in fetch
+    self._fetch_captions_json(video_id),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/youtube_transcript_api/_transcripts.py", line 373, in _fetch_captions_json
+    raise exception.with_proxy_config(self._proxy_config)
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/youtube_transcript_api/_transcripts.py", line 364, in _fetch_captions_json
+    return self._extract_captions_json(innertube_data, video_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/youtube_transcript_api/_transcripts.py", line 385, in _extract_captions_json
+    self._assert_playability(innertube_data.get("playabilityStatus"), video_id)
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/youtube_transcript_api/_transcripts.py", line 404, in _assert_playability
+    raise RequestBlocked(video_id)
+youtube_transcript_api._errors.RequestBlocked: 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=RXN9ci0SvIo! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+There are two things you can do to work around this:
+1. Use proxies to hide your IP address, as explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+2. (NOT RECOMMENDED) If you authenticate your requests using cookies, you will be able to continue doing requests for a while. However, YouTube will eventually permanently ban the account that you have used to authenticate with! So only do this if you don't mind your account being banned!
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+
+
+===== download video (bassa risoluzione) =====
+$ yt-dlp --no-warnings --retries 3 -f bv*[height<=480]+ba/b[height<=480]/b --merge-output-format mp4 -o /tmp/src.%(ext)s https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading visionos player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+$ yt-dlp --no-warnings --retries 3 --extractor-args youtube:player_client=tv,web_safari -f bv*[height<=480]+ba/b[height<=480]/b --merge-output-format mp4 -o /tmp/src.%(ext)s https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading tv client config
+[youtube] RXN9ci0SvIo: Downloading player 11a45ffb-main
+[youtube] RXN9ci0SvIo: Downloading tv player API JSON
+[youtube] RXN9ci0SvIo: Downloading web safari client config
+[youtube] RXN9ci0SvIo: Downloading web safari player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+$ yt-dlp --no-warnings --retries 3 --extractor-args youtube:player_client=mweb -f bv*[height<=480]+ba/b[height<=480]/b --merge-output-format mp4 -o /tmp/src.%(ext)s https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading mweb client config
+[youtube] RXN9ci0SvIo: Downloading mweb player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+$ yt-dlp --no-warnings --retries 3 --extractor-args youtube:player_client=android -f bv*[height<=480]+ba/b[height<=480]/b --merge-output-format mp4 -o /tmp/src.%(ext)s https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading android player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+$ yt-dlp --no-warnings --retries 3 --extractor-args youtube:player_client=ios -f bv*[height<=480]+ba/b[height<=480]/b --merge-output-format mp4 -o /tmp/src.%(ext)s https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading ios player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+$ yt-dlp --no-warnings --retries 3 --extractor-args youtube:player_client=web_embedded -f bv*[height<=480]+ba/b[height<=480]/b --merge-output-format mp4 -o /tmp/src.%(ext)s https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RXN9ci0SvIo
+[youtube] RXN9ci0SvIo: Downloading webpage
+[youtube] RXN9ci0SvIo: Downloading web embedded client config
+[youtube] RXN9ci0SvIo: Downloading player 11a45ffb-main
+[youtube] RXN9ci0SvIo: Downloading web embedded player API JSON
+ERROR: [youtube] RXN9ci0SvIo: Sign in to confirm you’re not a bot. This helps protect our community. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+
+
+===== trascrizione whisper (fallback) =====
+nessun video scaricato
+
+===== fotogrammi e contact sheet =====
+nessun video scaricato
+
+RISULTATI: {"wrapper": false}
