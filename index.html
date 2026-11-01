@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <title>Locandine · Scuola dell'infanzia Sacra Famiglia</title>
+  <meta name="theme-color" content="#fcf4e7">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Locandine">
+  <link rel="icon" type="image/png" href="assets/app-icon-192.png">
+  <link rel="apple-touch-icon" href="assets/app-icon-180.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/poster.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <!-- ======================= HOME ======================= -->
+  <section id="home" class="screen">
+    <header class="home-head">
+      <img src="assets/logo/logo.png" alt="Logo Istituto Sacra Famiglia" class="home-logo">
+      <div>
+        <h1>Locandine</h1>
+        <p>Scuola dell'infanzia Sacra Famiglia · Sorisole</p>
+      </div>
+    </header>
+
+    <h2>Crea una nuova locandina</h2>
+    <p class="hint">Scegli un modello: poi cambi testi, data, QR code e scarichi l'immagine per le storie di Instagram.</p>
+    <div id="templateGrid" class="card-grid"></div>
+
+    <div id="modelsBox" class="hidden">
+      <h2>I miei modelli</h2>
+      <div id="modelGrid" class="card-grid"></div>
+    </div>
+
+    <div id="draftsBox" class="hidden">
+      <h2>Le mie locandine</h2>
+      <div id="draftGrid" class="card-grid"></div>
+    </div>
+
+    <h2>Backup</h2>
+    <p class="hint">Le locandine restano salvate su questo dispositivo. Con il backup puoi spostarle su un altro telefono o computer.</p>
+    <div class="row-btns">
+      <button id="btnBackup" class="btn">⬇️ Esporta backup</button>
+      <label class="btn">⬆️ Importa backup<input id="inpRestore" type="file" accept="application/json,.json" hidden></label>
+    </div>
+    <p id="storageWarn" class="hint warn hidden">Attenzione: il browser è in modalità privata, le locandine non verranno salvate quando chiudi la pagina.</p>
+    <footer class="credits">Logo e illustrazioni dalle locandine della scuola · Illustrazioni extra: Microsoft Fluent Emoji (MIT) · Caratteri: Google Fonts (OFL)</footer>
+  </section>
+
+  <!-- ======================= EDITOR ======================= -->
+  <section id="editor" class="screen hidden">
+    <header class="ed-head">
+      <button id="btnHome" class="icon-btn" title="Torna all'inizio">‹</button>
+      <input id="docName" class="doc-name" aria-label="Nome locandina">
+      <button id="btnUndo" class="icon-btn" title="Annulla">↶</button>
+      <button id="btnRedo" class="icon-btn" title="Ripeti">↷</button>
+      <button id="btnExport" class="btn primary">Scarica</button>
+    </header>
+    <div class="ed-body">
+      <div id="stageArea" class="stage-area">
+        <div id="stageScaler" class="stage-scaler">
+          <div id="stage"></div>
+          <div id="overlay" class="overlay"></div>
+        </div>
+      </div>
+      <aside class="panel">
+        <nav class="tabs" id="tabs">
+          <button data-tab="testi" class="on">Testi</button>
+          <button data-tab="elemento">Elemento</button>
+          <button data-tab="aggiungi">Aggiungi</button>
+          <button data-tab="sfondo">Sfondo</button>
+          <button data-tab="altro">Altro</button>
+        </nav>
+        <div id="panelBody" class="panel-body"></div>
+      </aside>
+    </div>
+  </section>
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true"><div class="modal-box" id="modalBox"></div></div>
+  <div id="toast" class="toast hidden"></div>
+  <div id="exportHost" aria-hidden="true"></div>
+
+  <script src="js/vendor/qrcode.js"></script>
+  <script src="js/vendor/html-to-image.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/templates.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
