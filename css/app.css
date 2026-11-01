@@ -29,7 +29,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .hint.warn { color: #a3150f; }
 
 /* ---------- HOME ---------- */
-#home { max-width: 1100px; margin: 0 auto; padding: 18px 16px calc(40px + var(--safe-b)); }
+#home { max-width: 1100px; margin: 0 auto; padding: calc(18px + env(safe-area-inset-top, 0px)) 16px calc(40px + var(--safe-b)); }
 .home-head { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
 .home-logo { width: 64px; height: auto; }
 .home-head h1 { margin: 0; font-family: 'Kalam', cursive; color: var(--red); font-size: 36px; line-height: 1; }
@@ -48,7 +48,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* ---------- EDITOR ---------- */
 #editor { position: fixed; inset: 0; display: flex; flex-direction: column; }
-.ed-head { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: #fffaf2; border-bottom: 1px solid var(--line); }
+.ed-head { display: flex; align-items: center; gap: 8px; padding: calc(8px + env(safe-area-inset-top, 0px)) 10px 8px; background: #fffaf2; border-bottom: 1px solid var(--line); }
 .doc-name { flex: 1; min-width: 0; border: 1px solid transparent; background: transparent; border-radius: 10px; padding: 8px; font-weight: 600; font-size: 16px; }
 .doc-name:focus { border-color: var(--line); background: #fff; outline: none; }
 .ed-body { flex: 1; min-height: 0; display: flex; flex-direction: column; }

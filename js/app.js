@@ -58,11 +58,18 @@
   const scalerEl = $('#stageScaler');
   const areaEl = $('#stageArea');
 
+  // ------------------------------------------------------------------ servizi di Claude (se l'app è aperta come artifact)
+  let dlPromise = null;
+  function getDownloads() {
+    if (!window.claude || typeof window.claude.use !== 'function') return Promise.resolve(null);
+    if (!dlPromise) dlPromise = Promise.race([window.claude.use('downloads').catch(() => null), new Promise((r) => setTimeout(() => r(null), 10000))]);
+    return dlPromise;
+  }
+
   // ------------------------------------------------------------------ avvio
   async function init() {
-    if (!Store.persistent) {
-      try { await Store.all('docs'); } catch (e) { /* ignore */ }
-    }
+    getDownloads();
+    await Store.ready();
     const ups = await Store.all('uploads').catch(() => []);
     ups.forEach((u) => Poster.UPLOADS.set(u.id, u.data));
     if (!Store.persistent) $('#storageWarn').classList.remove('hidden');
@@ -105,7 +112,7 @@
         h('div', { onclick: () => newFromTemplate(m) }, thumb(m, cw), h('div', { class: 'meta' }, m.name, h('small', null, 'Modello personale'))),
         h('div', { class: 'acts' },
           h('button', { onclick: () => newFromTemplate(m) }, 'Usa'),
-          h('button', { onclick: async () => { if (confirm(`Eliminare il modello «${m.name}»?`)) { await Store.del('models', m.id); showHome(); } } }, 'Elimina'))));
+          h('button', { onclick: async () => { if (await askConfirm(`Eliminare il modello «${m.name}»?`)) { await Store.del('models', m.id); showHome(); } } }, 'Elimina'))));
     });
 
     const dg = $('#draftGrid'); dg.innerHTML = '';
@@ -116,7 +123,7 @@
         h('div', { class: 'acts' },
           h('button', { onclick: () => openDoc(d) }, 'Apri'),
           h('button', { onclick: async () => { const c = clone(d); c.id = uid('d'); c.name = d.name + ' (copia)'; c.updated = Date.now(); await Store.put('docs', c); showHome(); } }, 'Duplica'),
-          h('button', { onclick: async () => { if (confirm(`Eliminare «${d.name}»?`)) { await Store.del('docs', d.id); showHome(); } } }, 'Elimina'))));
+          h('button', { onclick: async () => { if (await askConfirm(`Eliminare «${d.name}»?`)) { await Store.del('docs', d.id); showHome(); } } }, 'Elimina'))));
     });
   }
 
@@ -716,11 +723,11 @@
       h('button', { class: 'btn', onclick: saveAsModel }, '⭐ Salva come modello'),
       h('p', { class: 'hint', style: 'margin:0 0 8px' }, 'Un modello compare nella pagina iniziale: lo puoi riusare per i prossimi eventi.'),
       h('button', { class: 'btn', onclick: async () => { const c = clone(S.doc); c.id = uid('d'); c.name = S.doc.name + ' (copia)'; c.updated = Date.now(); await Store.put('docs', c); openDoc(c); toast('Copia creata'); } }, '⧉ Duplica questa locandina'),
-      h('button', { class: 'btn', onclick: () => { if (confirm('Ripristinare il modello originale? Le modifiche a questa locandina andranno perse.')) { const t = BUILTIN_TEMPLATES.find((x) => x.id === S.doc.from) || S.models.find((x) => x.id === S.doc.from); if (!t) { toast('Modello originale non trovato'); return; } const id = S.doc.id, name = S.doc.name; S.doc = clone(t); S.doc.id = id; S.doc.name = name; S.doc.from = t.id; S.sel = null; commit(); renderStage(); renderPanel(); } } }, '↺ Ricomincia dal modello'),
-      h('button', { class: 'btn danger', onclick: async () => { if (confirm(`Eliminare «${S.doc.name}»?`)) { await Store.del('docs', S.doc.id); S.doc = null; showHome(); } } }, '🗑 Elimina locandina')));
+      h('button', { class: 'btn', onclick: async () => { if (await askConfirm('Ripristinare il modello originale? Le modifiche a questa locandina andranno perse.')) { const t = BUILTIN_TEMPLATES.find((x) => x.id === S.doc.from) || S.models.find((x) => x.id === S.doc.from); if (!t) { toast('Modello originale non trovato'); return; } const id = S.doc.id, name = S.doc.name; S.doc = clone(t); S.doc.id = id; S.doc.name = name; S.doc.from = t.id; S.sel = null; commit(); renderStage(); renderPanel(); } } }, '↺ Ricomincia dal modello'),
+      h('button', { class: 'btn danger', onclick: async () => { if (await askConfirm(`Eliminare «${S.doc.name}»?`)) { await Store.del('docs', S.doc.id); S.doc = null; showHome(); } } }, '🗑 Elimina locandina')));
   }
   async function saveAsModel() {
-    const name = prompt('Nome del nuovo modello:', (S.doc.name || 'Modello').replace(/ · \d\d\/\d\d$/, ''));
+    const name = await askText('Nome del nuovo modello:', (S.doc.name || 'Modello').replace(/ · \d\d\/\d\d$/, ''));
     if (!name) return;
     const m = clone(S.doc); m.id = uid('m'); m.name = name; m.updated = Date.now(); m.isModel = true;
     delete m.names;
@@ -730,13 +737,41 @@
 
   // ------------------------------------------------------------------ MODALE
   function openModal(title, content, wide) {
+    modalOnClose = null;
     const box = $('#modalBox'); box.innerHTML = '';
     box.appendChild(h('div', { class: 'modal-head' }, h('span', null, title), h('button', { class: 'icon-btn', onclick: closeModal }, '✕')));
     (Array.isArray(content) ? content : [h('div', { class: 'modal-body' }, content)]).forEach((c) => box.appendChild(c));
     box.style.height = wide ? '80vh' : '';
     $('#modal').classList.remove('hidden');
   }
-  function closeModal() { $('#modal').classList.add('hidden'); $('#modalBox').innerHTML = ''; }
+  function askConfirm(msg, okLabel = 'Sì, continua') {
+    return new Promise((resolve) => {
+      let done = false;
+      const fin = (v) => { if (done) return; done = true; closeModal(); resolve(v); };
+      openModal('Conferma', h('div', null, h('p', { style: 'font-size:16px;line-height:1.4' }, msg),
+        h('div', { class: 'row-btns', style: 'justify-content:flex-end' },
+          h('button', { class: 'btn', onclick: () => fin(false) }, 'Annulla'),
+          h('button', { class: 'btn primary', onclick: () => fin(true) }, okLabel))));
+      modalOnClose = () => fin(false);
+    });
+  }
+  function askText(msg, def) {
+    return new Promise((resolve) => {
+      let done = false;
+      const fin = (v) => { if (done) return; done = true; closeModal(); resolve(v); };
+      const inp = h('input', { type: 'text', value: def || '', style: 'width:100%;border:1px solid #e8d9c4;border-radius:10px;padding:10px;font-size:16px' });
+      inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') fin(inp.value.trim() || null); });
+      openModal(msg, h('div', null, inp,
+        h('div', { class: 'row-btns', style: 'justify-content:flex-end;margin-top:12px' },
+          h('button', { class: 'btn', onclick: () => fin(null) }, 'Annulla'),
+          h('button', { class: 'btn primary', onclick: () => fin(inp.value.trim() || null) }, 'Salva'))));
+      modalOnClose = () => fin(null);
+      setTimeout(() => inp.focus(), 50);
+    });
+  }
+  let modalOnClose = null;
+  function closeModal() {
+    const cb = modalOnClose; modalOnClose = null; $('#modal').classList.add('hidden'); $('#modalBox').innerHTML = ''; if (cb) cb(); }
   $('#modal').addEventListener('click', (e) => { if (e.target.id === 'modal') closeModal(); });
 
   // ------------------------------------------------------------------ ESPORTAZIONE
@@ -784,20 +819,34 @@
       return;
     }
     const files = results.map((r) => new File([r.blob], r.name, { type: 'image/png' }));
-    const canShare = !!(navigator.canShare && navigator.canShare({ files }));
+    const DL = await getDownloads();
+    let canShare = false;
+    try { canShare = !DL && !!(navigator.canShare && navigator.canShare({ files })); } catch (e) { canShare = false; }
     const content = h('div');
     if (results.length === 1) content.appendChild(h('img', { class: 'export-preview', src: results[0].url, alt: 'Anteprima' }));
     else { const l = h('div', { class: 'export-list' }); results.forEach((r) => l.appendChild(h('img', { src: r.url, alt: r.name }))); content.appendChild(l); }
     const btns = h('div', { class: 'row-btns', style: 'justify-content:center' });
+    if (DL) btns.appendChild(h('button', { class: 'btn primary', onclick: async () => {
+      for (const r of results) {
+        try { await DL.save({ filename: r.name, data: r.blob }); }
+        catch (e) {
+          const c = e && e.code;
+          if (c === 'declined') { toast('Salvataggio annullato'); return; }
+          if (c === 'rate_limited') { toast('Attendi un attimo e riprova'); return; }
+          toast('Salvataggio non disponibile qui: tieni premuto sull\'immagine per salvarla'); return;
+        }
+      }
+      toast(results.length > 1 ? 'Immagini salvate ✓' : 'Immagine salvata ✓');
+    } }, results.length > 1 ? `📲 Salva tutte (${results.length})` : '📲 Salva immagine'));
     if (canShare) btns.appendChild(h('button', { class: 'btn primary', onclick: async () => {
       try { await navigator.share({ files }); } catch (e) { if (e && e.name !== 'AbortError') toast('Condivisione non riuscita, usa «Scarica»'); }
     } }, results.length > 1 ? '📲 Salva / condividi tutte' : '📲 Salva in Foto / Instagram'));
-    btns.appendChild(h('button', { class: 'btn' + (canShare ? '' : ' primary'), onclick: () => {
+    if (!DL) btns.appendChild(h('button', { class: 'btn' + (canShare ? '' : ' primary'), onclick: () => {
       results.forEach((r, i) => setTimeout(() => { const a = h('a', { href: r.url, download: r.name }); document.body.appendChild(a); a.click(); a.remove(); }, i * 350));
     } }, results.length > 1 ? '⬇️ Scarica tutte (PNG)' : '⬇️ Scarica PNG'));
     content.appendChild(btns);
     const info = S.doc.w === 1080 && S.doc.h === 1920 ? 'Formato storia Instagram 1080×1920.' : `Formato ${S.doc.w * (S.doc.exportScale || 1)}×${S.doc.h * (S.doc.exportScale || 1)} px, adatto anche alla stampa.`;
-    content.appendChild(h('p', { class: 'hint', style: 'text-align:center;margin-top:12px' }, info + (canShare ? ' Con «Salva in Foto» scegli «Salva immagine» oppure direttamente Instagram.' : ' Su iPhone puoi anche tenere premuto sull\'immagine e scegliere «Aggiungi a Foto».')));
+    content.appendChild(h('p', { class: 'hint', style: 'text-align:center;margin-top:12px' }, info + (DL ? ' Nell\'app Claude per iPhone si apre il menu di condivisione: scegli «Salva immagine» oppure Instagram.' : canShare ? ' Con «Salva in Foto» scegli «Salva immagine» oppure direttamente Instagram.' : ' Su iPhone puoi anche tenere premuto sull\'immagine e scegliere «Aggiungi a Foto».')));
     openModal('La tua locandina è pronta', content);
   }
 
