@@ -1355,9 +1355,9 @@ window.BUILTIN_TEMPLATES = [
 "type": "image",
 "src": "assets/stickers/riquadri/pennellata_rossa.png",
 "x": 385,
-"y": 1271,
+"y": 1274,
 "w": 368,
-"h": 109,
+"h": 120,
 "t": {
 "text": "IL 10/12",
 "font": "Fredoka",
@@ -1942,7 +1942,7 @@ window.STICKER_CATALOG = [
 "src": "assets/stickers/riquadri/pennellata_rossa.png",
 "name": "Pennellata rossa",
 "w": 349,
-"h": 103
+"h": 114
 }
 ]
 },
