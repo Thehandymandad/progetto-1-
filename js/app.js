@@ -142,6 +142,7 @@
   function openDoc(d) {
     S.doc = clone(d);
     S.sel = null; S.undo = []; S.redo = []; S.last = JSON.stringify(S.doc);
+    view.z = 1; view.x = 0; view.y = 0;
     $('#home').classList.add('hidden');
     $('#editor').classList.remove('hidden');
     $('#docName').value = S.doc.name || '';
@@ -167,18 +168,126 @@
   }
   function namesList(d) { return (d.names || '').split('\n').map((s) => s.trim()).filter(Boolean); }
 
+  // ---------- vista: adatta + zoom con le dita ----------
+  const view = { z: 1, x: 0, y: 0 };
+  function baseScale(r) {
+    const pad = 18;
+    return Math.max(0.05, Math.min((r.width - pad * 2) / S.doc.w, (r.height - pad * 2) / S.doc.h));
+  }
+  function clampView(r) {
+    view.z = Math.min(8, Math.max(1, view.z));
+    if (view.z <= 1.01) { view.z = 1; view.x = 0; view.y = 0; return; }
+    const s = baseScale(r) * view.z;
+    const mx = Math.max(0, (S.doc.w * s - r.width) / 2 + r.width * 0.25);
+    const my = Math.max(0, (S.doc.h * s - r.height) / 2 + r.height * 0.25);
+    view.x = Math.max(-mx, Math.min(mx, view.x));
+    view.y = Math.max(-my, Math.min(my, view.y));
+  }
   function fitStage() {
     if (!S.doc) return;
     const r = areaEl.getBoundingClientRect();
-    const pad = 18;
-    const s = Math.max(0.05, Math.min((r.width - pad * 2) / S.doc.w, (r.height - pad * 2) / S.doc.h));
+    clampView(r);
+    const s = baseScale(r) * view.z;
     S.scale = s;
-    const ox = (r.width - S.doc.w * s) / 2, oy = (r.height - S.doc.h * s) / 2;
+    const ox = (r.width - S.doc.w * s) / 2 + view.x, oy = (r.height - S.doc.h * s) / 2 + view.y;
     scalerEl.style.width = S.doc.w + 'px';
     scalerEl.style.height = S.doc.h + 'px';
     scalerEl.style.transform = `translate(${ox}px,${oy}px) scale(${s})`;
     scalerEl.style.setProperty('--s', s);
+    const zl = document.getElementById('zoomLabel');
+    if (zl) zl.textContent = Math.round(view.z * 100) + '%';
   }
+  // ingrandisce di "f" tenendo fermo il punto (cx, cy) dell'area
+  function zoomAt(f, cx, cy) {
+    const r = areaEl.getBoundingClientRect();
+    const s0 = baseScale(r);
+    const sOld = s0 * view.z;
+    const oxOld = (r.width - S.doc.w * sOld) / 2 + view.x, oyOld = (r.height - S.doc.h * sOld) / 2 + view.y;
+    const u = (cx - oxOld) / sOld, v = (cy - oyOld) / sOld;
+    view.z = Math.min(8, Math.max(1, view.z * f));
+    const sNew = s0 * view.z;
+    view.x = cx - u * sNew - (r.width - S.doc.w * sNew) / 2;
+    view.y = cy - v * sNew - (r.height - S.doc.h * sNew) / 2;
+    fitStage();
+  }
+  function resetView() { view.z = 1; view.x = 0; view.y = 0; fitStage(); }
+
+  const ptrs = new Map();
+  let pinch = null, pan = null, lastTap = 0, selBefore = null;
+  const areaPt = (e) => { const r = areaEl.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+  function pinchState() {
+    const [a, b] = Array.from(ptrs.values());
+    return { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 };
+  }
+  areaEl.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('.zoom-ctl')) return;
+    if (ptrs.size === 0) selBefore = S.sel;
+    ptrs.set(e.pointerId, areaPt(e));
+    if (ptrs.size === 2) {
+      // secondo dito: annulla lo spostamento dell'elemento e passa allo zoom
+      if (drag && drag.kind === 'move') {
+        const el = elById(drag.id);
+        if (el && drag.moved) { el.x = drag.x0; el.y = drag.y0; const d = domById(el.id); if (d) { d.style.left = el.x + 'px'; d.style.top = el.y + 'px'; } }
+        drag = null;
+      }
+      pan = null;
+      pinch = { ...pinchState(), z0: view.z };
+      if (S.sel !== selBefore) { S.sel = selBefore; renderPanel(); }
+      drawOverlay();
+    } else if (ptrs.size === 1 && !e.target.closest('.el') && !e.target.closest('.handle')) {
+      pan = { sx: e.clientX, sy: e.clientY, x0: view.x, y0: view.y, moved: false };
+    }
+  }, true);
+  areaEl.addEventListener('pointermove', (e) => {
+    if (!ptrs.has(e.pointerId)) return;
+    ptrs.set(e.pointerId, areaPt(e));
+    if (pinch && ptrs.size >= 2) {
+      const st = pinchState();
+      const before = { mx: pinch.mx, my: pinch.my };
+      zoomAt(st.d / pinch.d, st.mx, st.my);
+      view.x += st.mx - before.mx; view.y += st.my - before.my;
+      fitStage(); drawOverlay();
+      pinch.d = st.d; pinch.mx = st.mx; pinch.my = st.my;
+    } else if (pan) {
+      const dx = e.clientX - pan.sx, dy = e.clientY - pan.sy;
+      if (!pan.moved && Math.hypot(dx, dy) < 6) return;
+      pan.moved = true;
+      if (view.z > 1) { view.x = pan.x0 + dx; view.y = pan.y0 + dy; fitStage(); }
+    }
+  }, true);
+  const ptrUp = (e) => {
+    if (!ptrs.has(e.pointerId)) return;
+    ptrs.delete(e.pointerId);
+    if (ptrs.size < 2) pinch = null;
+    if (pan && ptrs.size === 0) {
+      if (!pan.moved) {
+        const now = Date.now();
+        if (now - lastTap < 320) { if (view.z > 1) resetView(); else { const p = areaPt(e); zoomAt(2.2, p.x, p.y); } lastTap = 0; }
+        else lastTap = now;
+      }
+      pan = null;
+    }
+  };
+  areaEl.addEventListener('pointerup', ptrUp, true);
+  areaEl.addEventListener('pointercancel', ptrUp, true);
+  areaEl.addEventListener('wheel', (e) => {
+    if (!S.doc) return;
+    e.preventDefault();
+    const p = areaPt(e);
+    if (e.ctrlKey || e.metaKey) {
+      zoomAt(Math.exp(-e.deltaY * 0.01), p.x, p.y);
+    } else if (view.z > 1) {
+      view.x -= e.deltaX; view.y -= e.deltaY; fitStage();
+    } else {
+      zoomAt(Math.exp(-e.deltaY * 0.0025), p.x, p.y);
+    }
+    drawOverlay();
+  }, { passive: false });
+  ['gesturestart', 'gesturechange'].forEach((t) => areaEl.addEventListener(t, (e) => e.preventDefault()));
+  const zoomBtn = (f) => () => { const r = areaEl.getBoundingClientRect(); zoomAt(f, r.width / 2, r.height / 2); drawOverlay(); };
+  $('#zoomIn').addEventListener('click', zoomBtn(1.4));
+  $('#zoomOut').addEventListener('click', zoomBtn(1 / 1.4));
+  $('#zoomFit').addEventListener('click', () => { resetView(); drawOverlay(); });
   new ResizeObserver(() => fitStage()).observe(areaEl);
 
   const elById = (id) => S.doc && S.doc.elements.find((e) => e.id === id);
@@ -258,7 +367,7 @@
     const target = ev.target.closest('.el');
     if (!target) { if (S.sel) { S.sel = null; drawOverlay(); renderPanel(); } return; }
     const el = elById(target.dataset.id);
-    if (!el) return;
+    if (!el || pinch) return;
     ev.preventDefault();
     const wasSel = S.sel === el.id;
     if (!wasSel) { S.sel = el.id; drawOverlay(); if (S.tab === 'testi') highlightTextItem(); else setTab('elemento'); }
@@ -266,7 +375,7 @@
     stageEl.setPointerCapture(ev.pointerId);
   });
   stageEl.addEventListener('pointermove', (ev) => {
-    if (!drag || drag.kind !== 'move') return;
+    if (!drag || drag.kind !== 'move' || pinch) return;
     const dx = (ev.clientX - drag.sx) / S.scale, dy = (ev.clientY - drag.sy) / S.scale;
     if (!drag.moved && Math.hypot(ev.clientX - drag.sx, ev.clientY - drag.sy) < 4) return;
     drag.moved = true;
@@ -447,7 +556,7 @@
   // ---------- scheda ELEMENTO ----------
   function panelElement(body) {
     const el = elById(S.sel);
-    if (!el) { body.appendChild(h('div', { class: 'empty' }, 'Tocca un elemento della locandina per modificarlo.\nTrascinalo per spostarlo, usa il pallino blu in basso a destra per ingrandirlo e quello in alto per ruotarlo.')); return; }
+    if (!el) { body.appendChild(h('div', { class: 'empty' }, 'Tocca un elemento della locandina per modificarlo.\nTrascinalo per spostarlo, usa il pallino blu in basso a destra per ingrandirlo e quello in alto per ruotarlo.\n\nPer vedere meglio: pizzica con due dita per fare zoom, trascina con due dita (o con un dito sullo sfondo) per spostarti, doppio tocco sullo sfondo per tornare alla vista intera.')); return; }
     const titles = { text: 'Testo', image: 'Immagine / adesivo', shape: 'Forma', logo: 'Logo della scuola', qr: 'QR code' };
     body.appendChild(h('div', { style: 'font-weight:700;margin-bottom:10px' }, titles[el.type] || 'Elemento'));
     const upd = () => updateElementDom(el);
