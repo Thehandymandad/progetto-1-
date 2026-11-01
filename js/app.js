@@ -223,7 +223,7 @@
     if (e.target.closest('.zoom-ctl')) return;
     if (ptrs.size === 0) selBefore = S.sel;
     ptrs.set(e.pointerId, areaPt(e));
-    if (ptrs.size === 2) {
+    if (ptrs.size === 2 && e.pointerType !== 'touch') {
       // secondo dito: annulla lo spostamento dell'elemento e passa allo zoom
       if (drag && drag.kind === 'move') {
         const el = elById(drag.id);
@@ -241,14 +241,14 @@
   areaEl.addEventListener('pointermove', (e) => {
     if (!ptrs.has(e.pointerId)) return;
     ptrs.set(e.pointerId, areaPt(e));
-    if (pinch && ptrs.size >= 2) {
+    if (pinch && !tpinch && ptrs.size >= 2) {
       const st = pinchState();
       const before = { mx: pinch.mx, my: pinch.my };
       zoomAt(st.d / pinch.d, st.mx, st.my);
       view.x += st.mx - before.mx; view.y += st.my - before.my;
       fitStage(); drawOverlay();
       pinch.d = st.d; pinch.mx = st.mx; pinch.my = st.my;
-    } else if (pan) {
+    } else if (pan && !tpinch) {
       const dx = e.clientX - pan.sx, dy = e.clientY - pan.sy;
       if (!pan.moved && Math.hypot(dx, dy) < 6) return;
       pan.moved = true;
@@ -258,7 +258,7 @@
   const ptrUp = (e) => {
     if (!ptrs.has(e.pointerId)) return;
     ptrs.delete(e.pointerId);
-    if (ptrs.size < 2) pinch = null;
+    if (ptrs.size < 2 && !tpinch) pinch = null;
     if (pan && ptrs.size === 0) {
       if (!pan.moved) {
         const now = Date.now();
@@ -268,6 +268,40 @@
       pan = null;
     }
   };
+  // --- pizzico con le dita (eventi touch: affidabili su iPhone e nell'app Claude) ---
+  let tpinch = null;
+  const touchPt = (t) => { const r = areaEl.getBoundingClientRect(); return { x: t.clientX - r.left, y: t.clientY - r.top }; };
+  const touchState = (ts) => { const a = touchPt(ts[0]), b = touchPt(ts[1]); return { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 }; };
+  function startTouchPinch(ts) {
+    if (drag && drag.kind === 'move') {
+      const el = elById(drag.id);
+      if (el && drag.moved) { el.x = drag.x0; el.y = drag.y0; const d = domById(el.id); if (d) { d.style.left = el.x + 'px'; d.style.top = el.y + 'px'; } }
+      drag = null;
+    }
+    pan = null;
+    tpinch = touchState(ts);
+    pinch = tpinch;
+    if (S.sel !== selBefore) { S.sel = selBefore; renderPanel(); }
+    drawOverlay();
+  }
+  areaEl.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 1) selBefore = S.sel;
+    if (e.touches.length >= 2) { e.preventDefault(); startTouchPinch(e.touches); }
+  }, { passive: false, capture: true });
+  areaEl.addEventListener('touchmove', (e) => {
+    if (e.touches.length >= 2) {
+      e.preventDefault();
+      if (!tpinch) { startTouchPinch(e.touches); return; }
+      const st = touchState(e.touches);
+      zoomAt(st.d / tpinch.d, st.mx, st.my);
+      view.x += st.mx - tpinch.mx; view.y += st.my - tpinch.my;
+      fitStage(); drawOverlay();
+      tpinch.d = st.d; tpinch.mx = st.mx; tpinch.my = st.my;
+    } else if (S.doc) e.preventDefault();
+  }, { passive: false, capture: true });
+  const touchEnd = (e) => { if (e.touches.length < 2 && tpinch) { tpinch = null; pinch = null; pan = null; } };
+  areaEl.addEventListener('touchend', touchEnd, { capture: true });
+  areaEl.addEventListener('touchcancel', touchEnd, { capture: true });
   areaEl.addEventListener('pointerup', ptrUp, true);
   areaEl.addEventListener('pointercancel', ptrUp, true);
   areaEl.addEventListener('wheel', (e) => {
