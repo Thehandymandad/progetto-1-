@@ -82,8 +82,10 @@
   <div id="toast" class="toast hidden"></div>
   <div id="exportHost" aria-hidden="true"></div>
 
-  <script src="js/vendor/qrcode.js"></script>
-  <script src="js/vendor/html-to-image.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@2.0.4/dist/qrcode.js"></script>
+  <script>window.qrcode || document.write('<script src="js/vendor/qrcode.js"><\/script>');</script>
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.js"></script>
+  <script>window.htmlToImage || document.write('<script src="js/vendor/html-to-image.js"><\/script>');</script>
   <script src="js/render.js"></script>
   <script src="js/templates.js"></script>
   <script src="js/store.js"></script>
