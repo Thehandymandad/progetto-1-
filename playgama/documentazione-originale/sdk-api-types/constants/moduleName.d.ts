@@ -1,0 +1,21 @@
+export declare const MODULE_NAME: {
+    readonly CORE: "core";
+    readonly PLATFORM: "platform";
+    readonly PLAYER: "player";
+    readonly STORAGE: "storage";
+    readonly ADVERTISEMENT: "advertisement";
+    readonly SOCIAL: "social";
+    readonly DEVICE: "device";
+    readonly LEADERBOARDS: "leaderboards";
+    readonly PAYMENTS: "payments";
+    readonly REMOTE_CONFIG: "remote_config";
+    readonly CLIPBOARD: "clipboard";
+    readonly ACHIEVEMENTS: "achievements";
+    readonly ANALYTICS: "analytics";
+    readonly NOTIFICATIONS: "notifications";
+    readonly DAILY_REWARDS: "daily_rewards";
+    readonly TASKS: "tasks";
+    readonly CROSS_PROMO: "cross_promo";
+    readonly MULTIPLAYER: "multiplayer";
+};
+export type ModuleName = typeof MODULE_NAME[keyof typeof MODULE_NAME];
